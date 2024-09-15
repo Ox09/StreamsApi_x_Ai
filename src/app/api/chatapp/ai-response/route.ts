@@ -38,9 +38,6 @@ export async function POST(req: NextRequest) {
             if (err.name === "AbortError") {
               console.log("Stream aborted");
               controller.close();
-            } else {
-              console.error("Stream error:", err);
-              controller.error(err);
             }
 
             return NextResponse.json(
@@ -49,7 +46,6 @@ export async function POST(req: NextRequest) {
             );
           } else {
             console.error("Unknown error:", err);
-            controller.error(new Error("Unknown error occurred"));
 
             return NextResponse.json(
               {
@@ -65,17 +61,18 @@ export async function POST(req: NextRequest) {
     },
     cancel() {
       abortController.abort();
+      console.log("Ai text generation canceled")
     },
   });
-  // Handle client disconnection
-  req.signal.addEventListener("abort", () => {
-    abortController.abort();
-    console.log("Disconnected");
-  });
+  // Handle client disconnection (optional)
+  // req.signal.addEventListener("abort", () => {
+  //   abortController.abort();
+  //   console.log("Disconnected");
+  // });
   return new NextResponse(readableStream, {
     headers: {
       "Content-Type": "text/plain",
-      "X-Response-Timestamp": formatDateForChatMsg()
-     },
+      "X-Response-Timestamp": formatDateForChatMsg(),
+    },
   });
 }

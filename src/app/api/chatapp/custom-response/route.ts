@@ -1,5 +1,4 @@
 import { formatDateForChatMsg } from "@/lib/functions";
-import { NextResponse } from "next/server";
 
 // Prompts and answers
 const shortQaArray = [
@@ -30,7 +29,7 @@ const shortQaArray = [
   },
 ];
 
-export async function POST(req:Response) {
+export async function POST(req:Request) {
   const prompt = await req.text();
 
   if (prompt) {
